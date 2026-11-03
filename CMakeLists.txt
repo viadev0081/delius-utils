@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(negritos-utils
+project(delius-utils
     VERSION 1.0.0
     LANGUAGES CXX
 )
@@ -36,6 +36,7 @@ add_executable(cash_term
     cash-terminal/src/cash_term.cpp
     cash-terminal/src/lib/lib.cpp
 )
+
 target_include_directories(cash_term PRIVATE cash-terminal/src)
 target_link_libraries(cash_term PRIVATE ${CURSES_LIBRARIES})
 target_include_directories(cash_term PRIVATE ${CURSES_INCLUDE_DIRS})
@@ -50,4 +51,17 @@ add_custom_command(TARGET cash_term POST_BUILD
         "${CMAKE_CURRENT_SOURCE_DIR}/cash-terminal/data"
         "$<TARGET_FILE_DIR:cash_term>/data"
     COMMENT "Copying cash-terminal data"
+)
+
+# --- fastfetch-logos --------------------------------------------------------
+add_executable(ff-logos
+    fastfetch-logos/src/main.cpp
+)
+
+target_include_directories(cash_term PRIVATE fastfetch-logos/src)
+target_link_libraries(ff-logos PRIVATE ${CURSES_LIBRARIES})
+target_include_directories(ff-logos PRIVATE ${CURSES_INCLUDE_DIRS})
+
+set_target_properties(ff-logos PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/fastfetch-logos/bin"
 )
