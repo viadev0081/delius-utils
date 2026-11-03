@@ -13,7 +13,7 @@ CXX_FLAGS=(
 )
 
 function build {
-    cd ~/dev/change-script || exit 1
+    cd ~/delius-utils/change-script || exit 1
     mkdir -p bin/
     clang++ "${CXX_FLAGS[@]}" "${SOURCES[@]}" -o bin/cs -lncursesw || exit 1
     bin/cs
