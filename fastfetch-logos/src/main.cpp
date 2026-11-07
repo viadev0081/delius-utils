@@ -7,10 +7,32 @@
 #include <locale.h>
 #include <string>
 #include <cstring>
+#include <cstdio>
 
 const int HEIGHT = 34;
 const int WIDTH = 136;
-const int PAGE_COUNT = 3;
+const int PAGE_COUNT = 4;
+
+enum ColorPair {
+    PAIR_FRAME  = 1,   // рамка и заголовок окна — белый
+    PAIR_GARUDA = 2,   // логотип GARUDA — красный
+    PAIR_MINT   = 3,   // логотип MINT — зелёный
+    PAIR_ARCH   = 4,   // страница Arch — циан
+    PAIR_VOID   = 5,   // страница Void — зелёный
+    PAIR_ARTIX  = 6    // страница Artix — циан
+};
+
+static void printPair(
+    WINDOW * win,
+    int y,
+    int x,
+    const char * text,
+    int pair
+) {
+    wattron(win, COLOR_PAIR(pair));
+    mvwaddstr(win, y, x, text);
+    wattroff(win, COLOR_PAIR(pair));
+}
 
 void drawPage(WINDOW * win, int page)
 {
@@ -18,105 +40,119 @@ void drawPage(WINDOW * win, int page)
     getmaxyx(win, height, width);
     std::string labels[PAGE_COUNT];
     int totalWidth = 0;
-    int x = (width - totalWidth) / 2;
-    int y = height - 2;
 
     werase(win);
-    wattron(win, COLOR_PAIR(1));
+
+    // Рамка и заголовок всегда белые (PAIR_FRAME).
+    wattron(win, COLOR_PAIR(PAIR_FRAME));
     box(win, 0, 0);
 
     const char *title = " Viadev0081's Fastfetch Logos ";
     int titleX = (width - static_cast<int>(strlen(title))) / 2;
     mvwaddstr(win, 0, titleX, title);
-
-    wattroff(win, COLOR_PAIR(1));
+    wattroff(win, COLOR_PAIR(PAIR_FRAME));
 
     if (page == 0) {
-        wattron(win, COLOR_PAIR(1));
-
-        init_pair(1, COLOR_CYAN, -1);
-
-        mvwprintw(win, 1,  1, "Arch Logos: ", COLOR_CYAN);
-        mvwprintw(win, 4,  1, "                       ▄                         ", COLOR_CYAN);
-        mvwprintw(win, 5,  1, "                      ▟█▙                        ", COLOR_CYAN);
-        mvwprintw(win, 6,  1, "                     ▟███▙                                          /\\                 ", COLOR_CYAN);
-        mvwprintw(win, 7,  1, "                    ▟█████▙                                        /  \\                ", COLOR_CYAN);
-        mvwprintw(win, 8,  1, "                   ▟███████▙                                      /    \\               ", COLOR_CYAN);
-        mvwprintw(win, 9,  1, "                  ▂▔▀▜██████▙                                    /      \\              ", COLOR_CYAN);
-        mvwprintw(win, 10, 1, "                 ▟██▅▂▝▜█████▙                                   \\       \\            ", COLOR_CYAN);
-        mvwprintw(win, 11, 1, "                ▟█████████████▙                                __/        \\            ", COLOR_CYAN);
-        mvwprintw(win, 12, 1, "               ▟███████████████▙                              /            \\           (BOLSHE NEMA LOGOTIPOV) ", COLOR_CYAN);
-        mvwprintw(win, 13, 1, "              ▟█████████████████▙                            /     .--.     \\          ", COLOR_CYAN);
-        mvwprintw(win, 14, 1, "             ▟███████████████████▙                          /     |    |    /           ", COLOR_CYAN);
-        mvwprintw(win, 15, 1, "            ▟█████████▛▀▀▜████████▙                        /      |    |    \\__        ", COLOR_CYAN);
-        mvwprintw(win, 16, 1, "           ▟████████▛      ▜███████▙                      /    . /       \\ .   \\      ", COLOR_CYAN);
-        mvwprintw(win, 17, 1, "          ▟█████████        ████████▙                    /  _/              \\_  \\     ", COLOR_CYAN);
-        mvwprintw(win, 18, 1, "         ▟██████████        █████▆▅▄▃▂                  /__/                  \\__\\    ", COLOR_CYAN);
-        mvwprintw(win, 19, 1, "        ▟██████████▛        ▜█████████▙                                                 ", COLOR_CYAN);
-        mvwprintw(win, 20, 1, "       ▟██████▀▀▀              ▀▀██████▙                                                ", COLOR_CYAN);
-        mvwprintw(win, 21, 1, "      ▟███▀▘                       ▝▀███▙                                               ", COLOR_CYAN);
-        mvwprintw(win, 22, 1, "     ▟▛▀                               ▀▜▙                                              ", COLOR_CYAN);
-        mvwprintw(win, 25, 1, "                                                                                        ", COLOR_CYAN);
-        wattroff(win, COLOR_PAIR(1));
+        printPair(win, 1, 1, "Arch Logos: ", PAIR_ARCH);
+        printPair(win,  4, 1, "                       ▄                         ", PAIR_ARCH);
+        printPair(win,  5, 1, "                      ▟█▙                        ", PAIR_ARCH);
+        printPair(win,  6, 1, "                     ▟███▙                                          /\\                 ", PAIR_ARCH);
+        printPair(win,  7, 1, "                    ▟█████▙                                        /  \\                ", PAIR_ARCH);
+        printPair(win,  8, 1, "                   ▟███████▙                                      /    \\               ", PAIR_ARCH);
+        printPair(win,  9, 1, "                  ▂▔▀▜██████▙                                    /      \\              ", PAIR_ARCH);
+        printPair(win, 10, 1, "                 ▟██▅▂▝▜█████▙                                   \\       \\            ", PAIR_ARCH);
+        printPair(win, 11, 1, "                ▟█████████████▙                                __/        \\            ", PAIR_ARCH);
+        printPair(win, 12, 1, "               ▟███████████████▙                              /            \\           (BOLSHE NEMA LOGOTIPOV) ", PAIR_ARCH);
+        printPair(win, 13, 1, "              ▟█████████████████▙                            /     .--.     \\          ", PAIR_ARCH);
+        printPair(win, 14, 1, "             ▟███████████████████▙                          /     |    |    /           ", PAIR_ARCH);
+        printPair(win, 15, 1, "            ▟█████████▛▀▀▜████████▙                        /      |    |    \\__        ", PAIR_ARCH);
+        printPair(win, 16, 1, "           ▟████████▛      ▜███████▙                      /    . /       \\ .   \\      ", PAIR_ARCH);
+        printPair(win, 17, 1, "          ▟█████████        ████████▙                    /  _/              \\_  \\     ", PAIR_ARCH);
+        printPair(win, 18, 1, "         ▟██████████        █████▆▅▄▃▂                  /__/                  \\__\\    ", PAIR_ARCH);
+        printPair(win, 19, 1, "        ▟██████████▛        ▜█████████▙                                                 ", PAIR_ARCH);
+        printPair(win, 20, 1, "       ▟██████▀▀▀              ▀▀██████▙                                                ", PAIR_ARCH);
+        printPair(win, 21, 1, "      ▟███▀▘                       ▝▀███▙                                               ", PAIR_ARCH);
+        printPair(win, 22, 1, "     ▟▛▀                               ▀▜▙                                              ", PAIR_ARCH);
+        printPair(win, 25, 1, "                                                                                        ", PAIR_ARCH);
     }
     else if (page == 1) {
-        wattron(win, COLOR_PAIR(1));
-
-        init_pair(1, COLOR_GREEN, -1);
-
-        mvwprintw(win, 1, 1, "Void Logos: ", COLOR_GREEN);
-        mvwprintw(win, 4,  1, "                  █████████████             ", COLOR_GREEN);
-        mvwprintw(win, 5,  1, "              ████████████████████          ", COLOR_GREEN);
-        mvwprintw(win, 6,  1, "               █████████████████████        ", COLOR_GREEN);
-        mvwprintw(win, 7,  1, "                ███        ██████████       ", COLOR_GREEN);
-        mvwprintw(win, 8,  1, "         ████                 ████████      ", COLOR_GREEN);
-        mvwprintw(win, 9,  1, "        ██████                  ███████     ", COLOR_GREEN);
-        mvwprintw(win, 10, 1, "       ███████      ██████       ███████    ", COLOR_GREEN);
-        mvwprintw(win, 11, 1, "       ██████      ████████      ███████    ", COLOR_GREEN);
-        mvwprintw(win, 12, 1, "       ██████     ██████████      ██████                   (BOLSHE NEMA LOGOTIPOV) ", COLOR_GREEN);
-        mvwprintw(win, 13, 1, "       ██████     ██████████       ██████   ", COLOR_GREEN);
-        mvwprintw(win, 14, 1, "       ███████     ████████       ██████    ", COLOR_GREEN);
-        mvwprintw(win, 15, 1, "       ████████      ████         ██████    ", COLOR_GREEN);
-        mvwprintw(win, 16, 1, "        ███████                   █████     ", COLOR_GREEN);
-        mvwprintw(win, 17, 1, "         ████████                   ███     ", COLOR_GREEN);
-        mvwprintw(win, 18, 1, "          ██████████       █████            ", COLOR_GREEN);
-        mvwprintw(win, 19, 1, "            ██████████████████████          ", COLOR_GREEN);
-        mvwprintw(win, 20, 1, "              ███████████████████           ", COLOR_GREEN);
-        mvwprintw(win, 21, 1, "                  █████████                 ", COLOR_GREEN);
-
-        wattroff(win, COLOR_PAIR(1));
+        printPair(win, 1, 1, "Void Logos: ", PAIR_VOID);
+        printPair(win,  4, 1, "                  █████████████             ", PAIR_VOID);
+        printPair(win,  5, 1, "              ████████████████████          ", PAIR_VOID);
+        printPair(win,  6, 1, "               █████████████████████        ", PAIR_VOID);
+        printPair(win,  7, 1, "                ███        ██████████       ", PAIR_VOID);
+        printPair(win,  8, 1, "         ████                 ████████      ", PAIR_VOID);
+        printPair(win,  9, 1, "        ██████                  ███████     ", PAIR_VOID);
+        printPair(win, 10, 1, "       ███████      ██████       ███████    ", PAIR_VOID);
+        printPair(win, 11, 1, "       ██████      ████████      ███████    ", PAIR_VOID);
+        printPair(win, 12, 1, "       ██████     ██████████      ██████                   (BOLSHE NEMA LOGOTIPOV) ", PAIR_VOID);
+        printPair(win, 13, 1, "       ██████     ██████████       ██████   ", PAIR_VOID);
+        printPair(win, 14, 1, "       ███████     ████████       ██████    ", PAIR_VOID);
+        printPair(win, 15, 1, "       ████████      ████         ██████    ", PAIR_VOID);
+        printPair(win, 16, 1, "        ███████                   █████     ", PAIR_VOID);
+        printPair(win, 17, 1, "         ████████                   ███     ", PAIR_VOID);
+        printPair(win, 18, 1, "          ██████████       █████            ", PAIR_VOID);
+        printPair(win, 19, 1, "            ██████████████████████          ", PAIR_VOID);
+        printPair(win, 20, 1, "              ███████████████████           ", PAIR_VOID);
+        printPair(win, 21, 1, "                  █████████                 ", PAIR_VOID);
     }
     else if (page == 2) {
-        wattron(win, COLOR_PAIR(1));
+        printPair(win, 1, 1, "Artix Logos: ", PAIR_ARTIX);
+        printPair(win,  4, 1, "                       ▄                                          ▄", PAIR_ARTIX);
+        printPair(win,  5, 1, "                      ▟█▙                                        ▟█▙", PAIR_ARTIX);
+        printPair(win,  6, 1, "                     ▟███▙                                      ▟███▙", PAIR_ARTIX);
+        printPair(win,  7, 1, "                    ▟█████▙                                    ▟█████▙", PAIR_ARTIX);
+        printPair(win,  8, 1, "                   ▟███████▙                                  ▟███████▙", PAIR_ARTIX);
+        printPair(win,  9, 1, "                  ▟█████████▙                                ▟█████████▙", PAIR_ARTIX);
+        printPair(win, 10, 1, "                 ▟███████████▙                              ▟███████████▙", PAIR_ARTIX);
+        printPair(win, 11, 1, "                ▟█████████████▙                            ▐█████████████▙", PAIR_ARTIX);
+        printPair(win, 12, 1, "                   ▜███████████▙                             ▀▀███████████▙", PAIR_ARTIX);
+        printPair(win, 13, 1, "              ▟█▙      ▜████████▙                        ▄▄▂     ▀▀████████▙", PAIR_ARTIX);
+        printPair(win, 14, 1, "             ▟██████▙      ▜█████▙                      ▟████▆▅▄▂    ▀▀█████▙", PAIR_ARTIX);
+        printPair(win, 15, 1, "            ▟████████████▙   ▜████▙                    ▟██████████▆▅▄▂   ▀▀██▙", PAIR_ARTIX);
+        printPair(win, 16, 1, "           ▟███████████████▙    ▜██▙                  ▟████████████████▆▅▄▂  ▀", PAIR_ARTIX);
+        printPair(win, 17, 1, "          ▟██████████████████▙                       ▟█████████████████████▀ ", PAIR_ARTIX);
+        printPair(win, 18, 1, "         ▟███████████████████▀  ▂████▙              ▟███████████████████▀▀    ▂▄▄", PAIR_ARTIX);
+        printPair(win, 19, 1, "        ▟███████████████▀▀    ▂▂██████▙            ▟███████████████▀▀     ▂▄▆████▙", PAIR_ARTIX);
+        printPair(win, 20, 1, "       ▟███████████▀▀       ▄▄█████████▙          ▟███████████▀▀         █████████▙", PAIR_ARTIX);
+        printPair(win, 21, 1, "      ▟███████▀▀          ▀█████████████▙        ▟███████▀▀                ▀▀██████▙", PAIR_ARTIX);
+        printPair(win, 22, 1, "     ▟████▀▀                  ▀▀█████████▙      ▟███▀▀                         ▀▀███▙", PAIR_ARTIX);
+        printPair(win, 23, 1, "    ▟██▀                          ▀▀██████▙    ▟▛▀                                 ▀▜▙", PAIR_ARTIX);
+    }
+    else if (page == 3) {
+        printPair(win, 1, 1, "Other logos: ", PAIR_FRAME);
 
-        init_pair(1, COLOR_CYAN, -1);
+        printPair(win,  4, 1, "         ████████████████████████    ", PAIR_GARUDA);
+        printPair(win,  5, 1, "        ██                      ██   ", PAIR_GARUDA);
+        printPair(win,  6, 1, "       ██           ██           ██  ", PAIR_GARUDA);
+        printPair(win,  7, 1, "      ██           ██             ██ ", PAIR_GARUDA);
+        printPair(win,  8, 1, "     ██           ██              ██ ", PAIR_GARUDA);
+        printPair(win,  9, 1, "    ██            ████████████████   ", PAIR_GARUDA);
+        printPair(win, 10, 1, "   ██                                ", PAIR_GARUDA);
+        printPair(win, 11, 1, "   ██                                ", PAIR_GARUDA);
+        printPair(win, 12, 1, "   ██             ███████████████    ", PAIR_GARUDA);
+        printPair(win, 13, 1, "   ██                          ██    ", PAIR_GARUDA);
+        printPair(win, 14, 1, "    ██                        ██     ", PAIR_GARUDA);
+        printPair(win, 15, 1, "     ██                     ██       ", PAIR_GARUDA);
+        printPair(win, 16, 1, "      ██████████████████████         ", PAIR_GARUDA);
+        printPair(win, 17, 1, "               GARUDA                ", PAIR_GARUDA);
 
-        mvwprintw(win, 1,  1, "Artix Logos: ", COLOR_CYAN);
-        mvwprintw(win, 4,   1, "                       ▄                    ", COLOR_CYAN);
-        mvwprintw(win, 5,   1, "                      ▟█▙                   ", COLOR_CYAN);
-        mvwprintw(win, 6,   1, "                     ▟███▙                  ", COLOR_CYAN);
-        mvwprintw(win, 7,   1, "                    ▟█████▙                 ", COLOR_CYAN);
-        mvwprintw(win, 8,   1, "                   ▟███████▙                ", COLOR_CYAN);
-        mvwprintw(win, 9,   1, "                  ▟█████████▙               ", COLOR_CYAN);
-        mvwprintw(win, 10,  1, "                 ▟███████████▙              ", COLOR_CYAN);
-        mvwprintw(win, 11,  1, "                ▟█████████████▙             ", COLOR_CYAN);
-        mvwprintw(win, 12,  1, "                   ▜███████████▙            ", COLOR_CYAN);
-        mvwprintw(win, 13,  1, "              ▟█▙      ▜████████▙           ", COLOR_CYAN);
-        mvwprintw(win, 14,  1, "             ▟██████▙      ▜█████▙                         (BOLSHE NEMA LOGOTIPOV) ", COLOR_CYAN);
-        mvwprintw(win, 15,  1, "            ▟████████████▙   ▜████▙         ", COLOR_CYAN);
-        mvwprintw(win, 16,  1, "           ▟███████████████▙    ▜██▙        ", COLOR_CYAN);
-        mvwprintw(win, 17,  1, "          ▟██████████████████▙              ", COLOR_CYAN);
-        mvwprintw(win, 18,  1, "         ▟███████████████████▀  ▂████▙      ", COLOR_CYAN);
-        mvwprintw(win, 19,  1, "        ▟███████████████▀▀    ▂▂██████▙     ", COLOR_CYAN);
-        mvwprintw(win, 20,  1, "       ▟███████████▀▀       ▄▄█████████▙    ", COLOR_CYAN);
-        mvwprintw(win, 21,  1, "      ▟███████▀▀          ▀█████████████▙   ", COLOR_CYAN);
-        mvwprintw(win, 22,  1, "     ▟████▀▀                  ▀▀█████████▙  ", COLOR_CYAN);
-        mvwprintw(win, 23,  1, "    ▟██▀                          ▀▀██████▙ ", COLOR_CYAN);
-
-        wattroff(win, COLOR_PAIR(1));
+        printPair(win, 19, 1, "      █████████████████████      ", PAIR_MINT);
+        printPair(win, 20, 1, "    ██                     ██    ", PAIR_MINT);
+        printPair(win, 21, 1, "  ██    ██  ███████████      ██  ", PAIR_MINT);
+        printPair(win, 22, 1, "  ██    ██  ██   ██    ██    ██  ", PAIR_MINT);
+        printPair(win, 23, 1, "  ██    ██  ██   ██    ██    ██  ", PAIR_MINT);
+        printPair(win, 24, 1, "  ██    ██  ██   ██    ██    ██  ", PAIR_MINT);
+        printPair(win, 25, 1, "  ██    ██  ██   ██    ██    ██  ", PAIR_MINT);
+        printPair(win, 26, 1, "  ██    ██  ██   ██    ██    ██  ", PAIR_MINT);
+        printPair(win, 27, 1, "  ██    ██             ██    ██  ", PAIR_MINT);
+        printPair(win, 28, 1, "  ██     ██████████████      ██  ", PAIR_MINT);
+        printPair(win, 29, 1, "    ██                    ██     ", PAIR_MINT);
+        printPair(win, 30, 1, "      ████████████████████       ", PAIR_MINT);
+        printPair(win, 31, 1, "               MINT              ", PAIR_MINT);
     }
 
-    mvwprintw(win, y, 1, "Press 'q' to exit");
+    mvwaddstr(win, height - 2, 1, "Press 'q' to exit");
 
     for (int i = 0; i < PAGE_COUNT; ++i) {
         labels[i] = (i == page)
@@ -128,6 +164,9 @@ void drawPage(WINDOW * win, int page)
             totalWidth += 2;
         }
     }
+
+    int x = (width - totalWidth) / 2;
+    int y = height - 2;
 
     for (int i = 0; i < PAGE_COUNT; ++i) {
         if (i > 0) {
@@ -155,9 +194,22 @@ int main()
     setlocale(LC_ALL, "");
 
     initscr();
+
+    if (!has_colors()) {
+        endwin();
+        std::fprintf(stderr, "Терминал не поддерживает цвет\n");
+        return 1;
+    }
+
     start_color();
     use_default_colors();
-    init_pair(1, COLOR_CYAN, -1);
+
+    init_pair(PAIR_FRAME,  COLOR_WHITE, -1);
+    init_pair(PAIR_GARUDA, COLOR_RED,   -1);
+    init_pair(PAIR_MINT,   COLOR_GREEN, -1);
+    init_pair(PAIR_ARCH,   COLOR_CYAN,  -1);
+    init_pair(PAIR_VOID,   COLOR_GREEN, -1);
+    init_pair(PAIR_ARTIX,  COLOR_CYAN,  -1);
 
     cbreak();
     noecho();
@@ -197,10 +249,12 @@ int main()
                 }
             break;
 
-            case KEY_RESIZE:
-                resizeterm(0, 0);
-                wresize(win, LINES, COLS);
-                mvwin(win, 0, 0);
+            case KEY_RESIZE: {
+                int newy = (LINES - HEIGHT) / 2;
+                int newx = (COLS - WIDTH) / 2;
+                wresize(win, HEIGHT, WIDTH);
+                mvwin(win, newy, newx);
+            }
             break;
 
             case 'q':
