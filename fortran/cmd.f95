@@ -237,7 +237,7 @@ contains
         character*512 cmd
         integer status
 
-        cmd = '~/dev/cash-terminal/bin/cash_term'
+        cmd = '~/delius-utils/cash-terminal/bin/cash_term'
         call system(trim(cmd), status)
 
         if (status /= 0) then
@@ -250,7 +250,7 @@ contains
         character*512 cmd
         integer status
 
-        cmd = '~/dev/change-script/bin/cs'
+        cmd = '~/delius-utils/change-script/bin/cs'
         call system(trim(cmd), status)
 
         if (status /= 0) then
@@ -263,7 +263,7 @@ contains
         character*512 cmd
         integer status
 
-        cmd = '~/dev/fastfetch-logos/bin/ff-logos'
+        cmd = '~/delius-utils/fastfetch-logos/bin/ff-logos'
         call system(trim(cmd), status)
 
         if (status /= 0) then
