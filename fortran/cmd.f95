@@ -237,7 +237,7 @@ contains
         character*512 cmd
         integer status
 
-        cmd = '~/delius-utils/cash-terminal/bin/cash_term'
+        cmd = '~/dev/cash-terminal/bin/cash_term'
         call system(trim(cmd), status)
 
         if (status /= 0) then
@@ -250,7 +250,7 @@ contains
         character*512 cmd
         integer status
 
-        cmd = '~/delius-utils/change-script/bin/cs'
+        cmd = '~/dev/change-script/bin/cs'
         call system(trim(cmd), status)
 
         if (status /= 0) then
@@ -263,7 +263,7 @@ contains
         character*512 cmd
         integer status
 
-        cmd = '~/delius-utils/fastfetch-logos/bin/ff-logos'
+        cmd = '~/dev/fastfetch-logos/bin/ff-logos'
         call system(trim(cmd), status)
 
         if (status /= 0) then
@@ -467,6 +467,14 @@ contains
         end if
     end subroutine cmd_calc
 
+    subroutine cmd_clear_screen()
+        implicit none
+        character(1), parameter :: esc = char(27)
+        write(*, '(a)', advance='no') esc // '[2J' // esc // '[H'
+        
+        call flush(6)
+    end subroutine cmd_clear_screen
+
     subroutine cmd_help()
         write (*, '(A)') MAGENTA//'|==========================================================|'//RESET
         write (*, '(A)') MAGENTA//'| Base commands :                                          |'//RESET
@@ -476,21 +484,22 @@ contains
         write (*, '(A)') MAGENTA//'| 4.editor - editor (logichno blin)                        |'//RESET
         write (*, '(A)') MAGENTA//'| 5.market - TUI simulator of Пятёрочка on C++             |'//RESET 
         write (*, '(A)') MAGENTA//'| 6.cs     - TUI changer of scripts on C++                 |'//RESET 
-        write (*, '(A)') MAGENTA//'| 7.ff-logos - TUI program with my kit of FastFetch logos  |'//RESET  
+        write (*, '(A)') MAGENTA//'| 7.ff-logos - TUI program with my kit of FastFetch logos  |'//RESET
+        write (*, '(A)') MAGENTA//'| 8.clear - clear the screen of terminal                   |'//RESET 
         write (*, '(A)') MAGENTA//'|==========================================================|'//RESET 
 
         write (*, '(A)') RESET//''//RESET
         
         write (*, '(A)') MAGENTA//'|=========================================================|'//RESET 
         write (*, '(A)') MAGENTA//'| Commands for working with files and directories :       |'//RESET
-        write (*, '(A)') MAGENTA//'| 5.ls    - list files and directories                    |'//RESET
-        write (*, '(A)') MAGENTA//'| 6.pwd   - print working directory                       |'//RESET
-        write (*, '(A)') MAGENTA//'| 7.cd    - change directory (cd <path> | cd)             |'//RESET
-        write (*, '(A)') MAGENTA//'| 8.touch - create a file        (touch -f <file>)        |'//RESET
-        write (*, '(A)') MAGENTA//'| 9.mkdir - create a directory   (mkdir -d <dir>)         |'//RESET
-        write (*, '(A)') MAGENTA//'| 10.rm   - remove file/dir      (rm -f <file>|-d <dir>)  |'//RESET
-        write (*, '(A)') MAGENTA//'| 11.cat  - output content in file (cat <file>)           |'//RESET
-        write (*, '(A)') MAGENTA//'| 12.exit - exit the shell                                |'//RESET
+        write (*, '(A)') MAGENTA//'| 1.ls    - list files and directories                    |'//RESET
+        write (*, '(A)') MAGENTA//'| 2.pwd   - print working directory                       |'//RESET
+        write (*, '(A)') MAGENTA//'| 3.cd    - change directory (cd <path> | cd)             |'//RESET
+        write (*, '(A)') MAGENTA//'| 4.touch - create a file        (touch -f <file>)        |'//RESET
+        write (*, '(A)') MAGENTA//'| 5.mkdir - create a directory   (mkdir -d <dir>)         |'//RESET
+        write (*, '(A)') MAGENTA//'| 6.rm   - remove file/dir      (rm -f <file>|-d <dir>)   |'//RESET
+        write (*, '(A)') MAGENTA//'| 7.cat  - output content in file (cat <file>)            |'//RESET
+        write (*, '(A)') MAGENTA//'| 8.exit - exit the shell                                 |'//RESET
         write (*, '(A)') MAGENTA//'|=========================================================|'//RESET
     end subroutine cmd_help
 
@@ -552,7 +561,7 @@ program cmd
 
     ! бесконечный цикл
     do while (.true.)
-        write(*, '(A)', advance='no') '> '
+        write(*, '(A)', advance='no') '$ '
         flush(6)
 
         read(*, '(A)', iostat=ios) line
@@ -578,6 +587,8 @@ program cmd
             call cmd_change_script()
         case ('ff-logos')
             call cmd_fastfetch_logos()
+        case ('clear')
+            call cmd_clear_screen()
         case ('ls', 'dir')
             call cmd_ls(args, nargs)
         case ('pwd')
@@ -595,7 +606,7 @@ program cmd
         case ('exit', 'quit')
             exit
         case default
-            write (*, '(A)') RED//'[ERROR]: Wrong command'//RESET
+            write (*, '(A)') '[ERROR]: Wrong command'
         end select
     end do
 
